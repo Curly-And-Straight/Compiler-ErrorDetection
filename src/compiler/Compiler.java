@@ -20,6 +20,7 @@ public class Compiler {
         ParseTreeWalker walker = new ParseTreeWalker();
         CoolListener listener = new ScopeChecker();
         walker.walk(listener,tree);
+        System.out.println("----------------------------------------------------------------");
         for (int i = 0; i < ScopeChecker.nodes.size(); i++) {
             System.out.println(ScopeChecker.nodes.get(i).name + " : " + ScopeChecker.nodes.get(i).symbolTable.keySet() + ScopeChecker.nodes.get(i).symbolTable.values().toString());
         }
