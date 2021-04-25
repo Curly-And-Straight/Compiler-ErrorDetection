@@ -18,11 +18,11 @@ public class ScopeChecker implements CoolListener {
     static int error_number = 1;
     public void detectError(String typeID,String name,int line , int column){
         if(parents.peek().lookup(name) != null){
-            ClassObj obji = parents.peek().lookup(name);
+            Scopes scope = parents.peek().lookup(name);
             System.out.println("****************************************************");
-            System.out.println("obji.id = " + obji.id + " , typeID = " + typeID);
-            if(obji.id.equals(typeID)){
-                System.out.println("Error" + error_number + " : in line [" + line + ":" + column + "], " + obji.id + " [" + obji.name + "] has been defined already");
+            System.out.println("obji.id = " + scope.id + " , typeID = " + typeID);
+            if(scope.id.equals(typeID)){
+                System.out.println("Error" + error_number + " : in line [" + line + ":" + column + "], " + scope.id + " [" + scope.name + "] has been defined already");
             }
         }
 
@@ -31,10 +31,10 @@ public class ScopeChecker implements CoolListener {
     public ClassObj checkInheritance(CoolParser.ClassDefContext ctx){
         ClassObj obj;
         if(ctx.TYPE(1) == null){
-            obj = new ClassObj(ctx.TYPE(0).getText());
+            obj = new ClassObj("class",ctx.TYPE(0).getText());
         }
         else{
-            obj = new ClassObj(ctx.TYPE(0).getText(),ctx.TYPE(1).getText());
+            obj = new ClassObj("class",ctx.TYPE(0).getText(),ctx.TYPE(1).getText());
         }
 
         return obj;
@@ -74,7 +74,7 @@ public class ScopeChecker implements CoolListener {
         detectError("method",ctx.ID().getText(),line,column);
         Node method = new Node(parents.peek(),ctx.ID().getText());
         nodes.add(method);
-        parents.peek().insert(method.name,new MethodObj(ctx.ID().getText(),ctx.TYPE().getText(),ctx.parameter()));
+        parents.peek().insert(method.name,new MethodObj("method",ctx.ID().getText(),ctx.TYPE().getText(),ctx.parameter()));
         parents.push(method);
     }
 
@@ -90,7 +90,7 @@ public class ScopeChecker implements CoolListener {
         detectError("var",ctx.ID().getText(),line,column);
         Node field = new Node(parents.peek(),ctx.ID().getText());
         nodes.add(field);
-        parents.peek().insert(field.name,new FieldObj(ctx.ID().getText(),ctx.TYPE().getText(), "var"));
+        parents.peek().insert(field.name,new FieldObj("var",ctx.ID().getText(),ctx.TYPE().getText()));
     }
 
     @Override
@@ -254,7 +254,7 @@ public class ScopeChecker implements CoolListener {
         detectError("let",ctx.ID(0).getText(),line,column);
         Node field = new Node(parents.peek(),ctx.ID(0).getText());
         nodes.add(field);
-        parents.peek().insert(field.name,new FieldObj(ctx.ID(0).getText(),ctx.TYPE(0).getText(),"let"));
+        parents.peek().insert(field.name,new FieldObj("let",ctx.ID(0).getText(),ctx.TYPE(0).getText()));
     }
 
     @Override
