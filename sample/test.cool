@@ -34,7 +34,7 @@ class A {
 };
 
 class A {
-
+    char :String;
 };
 
 class B inherits A { -- B is a number squared
@@ -43,7 +43,7 @@ class B inherits A { -- B is a number squared
     {--square
         (let x :Int in {
         x<-num * num;
-        (new C).set_var(x);
+        (new L).set_var(x);
     } )
 
     }
