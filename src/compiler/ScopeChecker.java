@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
@@ -15,8 +16,8 @@ public class ScopeChecker implements CoolListener {
     static ArrayList<Node> nodes = new ArrayList();
     Stack<Node> parents = new Stack<>();
     static int error_number = 0;
-    ArrayList new_objects = new ArrayList<>();
-    ArrayList method_called = new ArrayList<>();
+    ArrayList<List> new_objects = new ArrayList<>();
+    ArrayList<List> method_called = new ArrayList<>();
     boolean skipClass = false;
     boolean skipMethod = false;
     public Node duplicateError(String typeID, String name, int line , int column){
@@ -38,17 +39,27 @@ public class ScopeChecker implements CoolListener {
         return new Node(parents.peek(),name);
     }
 
-    public void notExistError(List list,String scope){
+    public void notExistError(List<List> list,String scope){
         switch (scope){
             case "class":
                 for (int i = 0; i < list.size(); i++) {
-                    if(!nodes.get(0).symbolTable.containsKey(list.get(i))){
+                    if(!nodes.get(0).symbolTable.containsKey(list.get(i).get(0))){
                         error_number++;
-//                        System.out.println("Error" + error_number + " : " + "in line [" + );
+                        System.out.println("Error" + error_number + " : " + "in line [" + list.get(i).get(1) + ":" + list.get(i).get(2) + "], cannot find class [" + list.get(i).get(0) + "]");
                     }
                 }
-//                Error105 : in line [line:column], cannot find class [className]
                 break;
+
+            case "method":
+                for (int i = 0; i < list.size(); i++) {
+                    if(!nodes.get(0).symbolTable.containsKey(list.get(i).get(0))){
+                        error_number++;
+                        System.out.println("Error" + error_number + " : " + "in line [" + list.get(i).get(1) + ":" + list.get(i).get(2) + "], cannot find class [" + list.get(i).get(0) + "]");
+                    }
+                }
+                break;
+
+
         }
 
     }
@@ -76,7 +87,7 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void exitStart(CoolParser.StartContext ctx) {
         notExistError(new_objects,"class");
-        notExistError(method_called,"method");
+//        notExistError(method_called,"method");
     }
 
     @Override
@@ -146,7 +157,7 @@ public class ScopeChecker implements CoolListener {
 
     @Override
     public void enterSub(CoolParser.SubContext ctx) {
-
+        
     }
 
     @Override
@@ -196,7 +207,7 @@ public class ScopeChecker implements CoolListener {
 
     @Override
     public void enterStaticCall(CoolParser.StaticCallContext ctx) {
-
+        System.out.println("static call : " + ctx.getText());
     }
 
     @Override
@@ -262,13 +273,11 @@ public class ScopeChecker implements CoolListener {
 
     @Override
     public void enterNewObject(CoolParser.NewObjectContext ctx) {
-        System.out.println("new object : " + ctx.TYPE().getText());
         List name = new ArrayList();
         name.add(ctx.TYPE().getText());
-        name.add(ctx.TYPE().getText());
-        name.add(ctx.TYPE().getText());
+        name.add(ctx.getStart().getLine());
+        name.add(ctx.getStart().getCharPositionInLine());
         new_objects.add(name);
-
     }
 
     @Override
