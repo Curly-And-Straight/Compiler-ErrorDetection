@@ -31,9 +31,6 @@ class A {
         (new B).set_var(x);
     } )}
     ;
-
-
-
 };
 
 class A {
@@ -47,8 +44,9 @@ class B inherits A { -- B is a number squared
         (let x :Int in {
         x<-num * num;
         (new C).set_var(x);
-    } )}
+    } )
 
+    }
     ;
 };
 
@@ -69,6 +67,8 @@ class Main inherits IO {
     char :String;
     avar :A;
     flag :Bool<-true;
+
+    char :String;
 
     main() :Object
 
