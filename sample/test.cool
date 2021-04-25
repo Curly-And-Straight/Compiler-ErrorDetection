@@ -22,11 +22,23 @@ class A {
     } )}
 
     ;
+
+    method2(num5 :Int, num4 :Int) :D
+    {
+        --plus
+        (let x :Int in {
+        x<-num1 + num2;
+        (new B).set_var(x);
+    } )}
+    ;
+
+
+
 };
 
 class A {
 
-}
+};
 
 class B inherits A { -- B is a number squared
 
