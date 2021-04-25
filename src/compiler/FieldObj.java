@@ -1,11 +1,18 @@
 package compiler;
 
-public class FieldObj extends ClassObj{
-    String id,name,type;
+public class FieldObj extends Scopes{
+    String type;
 
-    public FieldObj(String name, String type,String id) {
-        this.id = id;
-        this.name = name;
+    public FieldObj(String type) {
+        this.type = type;
+    }
+
+    public FieldObj(String id,String name) {
+        super(id,name);
+    }
+
+    public FieldObj(String id,String name,String type) {
+        super(id,name);
         this.type = type;
     }
 

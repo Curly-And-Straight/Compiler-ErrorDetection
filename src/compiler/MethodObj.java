@@ -5,13 +5,13 @@ import gen.CoolParser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MethodObj extends ClassObj {
-    String id,name,return_type;
+public class MethodObj extends Scopes {
+    String return_type;
     List<CoolParser.ParameterContext> params;
 
-    public MethodObj(String name, String return_type, List<CoolParser.ParameterContext> params) {
-        this.id = "method";
-        this.name = name;
+
+    public MethodObj(String id,String name, String return_type, List<CoolParser.ParameterContext> params) {
+        super(id,name);
         this.return_type = return_type;
         this.params = params;
     }

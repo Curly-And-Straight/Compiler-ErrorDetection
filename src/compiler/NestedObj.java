@@ -1,9 +1,8 @@
 package compiler;
 
-public class NestedObj extends  ClassObj{
-    String name;
+public class NestedObj extends  Scopes{
     public NestedObj(String name){
-        this.name = name;
+        super(name);
     }
 
     @Override

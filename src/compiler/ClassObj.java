@@ -1,22 +1,27 @@
 package compiler;
 
-public class ClassObj {
+public class ClassObj extends Scopes{
 
-    String id ,name,inherit_class;
+    String inherit_class;
 
     public ClassObj(){
-        this.id = "class";
+
     }
 
     public ClassObj(String name) {
-        this.id = "class";
-        this.name = name;
+        super(name);
+
     }
-    public ClassObj(String name, String inherit_class) {
-        this.id = "class";
-        this.name = name;
+
+    public ClassObj(String id,String name) {
+        super(id,name);
+
+    }
+    public ClassObj(String id,String name,String inherit_class) {
+        super(id,name);
         this.inherit_class = inherit_class;
     }
+
 
     @Override
     public String toString() {
