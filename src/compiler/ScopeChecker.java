@@ -20,6 +20,8 @@ public class ScopeChecker implements CoolListener {
     ArrayList<List> method_called = new ArrayList<>();
     boolean skipClass = false;
     boolean skipMethod = false;
+    boolean skipField = false;
+
     public Node duplicateError(String typeID, String name, int line , int column){
         if(parents.peek().lookup(name) != null){
             Scopes scope = parents.peek().lookup(name);
@@ -30,6 +32,10 @@ public class ScopeChecker implements CoolListener {
                 else if(scope.id == "method"){
                     skipMethod = true;
                 }
+                else if(scope.id == "var" || scope.id == "let"){
+                    skipField = true;
+                }
+
                 error_number ++;
                 System.out.println("Error" + error_number + " : in line [" + line + ":" + column + "], " + scope.id + " [" + scope.name + "] has been defined already");
                 Node cl = new Node(parents.peek(),name + "_" + line + "_" + column);
@@ -50,11 +56,11 @@ public class ScopeChecker implements CoolListener {
                 }
                 break;
 
-            case "method":
+            case "var":
                 for (int i = 0; i < list.size(); i++) {
-                    if(!nodes.get(0).symbolTable.containsKey(list.get(i).get(0))){
+                    if(!parents.peek().symbolTable.containsKey(list.get(i).get(0))){
                         error_number++;
-                        System.out.println("Error" + error_number + " : " + "in line [" + list.get(i).get(1) + ":" + list.get(i).get(2) + "], cannot find class [" + list.get(i).get(0) + "]");
+                        System.out.println("Error" + error_number + " : " + "in line [" + list.get(i).get(1) + ":" + list.get(i).get(2) + "], cannot find variable [" + list.get(i).get(0) + "]");
                     }
                 }
                 break;
@@ -76,6 +82,7 @@ public class ScopeChecker implements CoolListener {
 
         return obj;
     }
+
 
     @Override
     public void enterStart(CoolParser.StartContext ctx) {
@@ -135,14 +142,17 @@ public class ScopeChecker implements CoolListener {
             int line = ctx.getStart().getLine();
             int column =  ctx.getStart().getCharPositionInLine();
             Node field = duplicateError("var",ctx.ID().getText(),line,column);
-            nodes.add(field);
+            if (!skipField){
+                nodes.add(field);
+            }
+
             parents.peek().insert(field.name,new FieldObj("var",ctx.ID().getText(),ctx.TYPE().getText()));
         }
     }
 
     @Override
     public void exitVarDef(CoolParser.VarDefContext ctx) {
-
+        skipField = false;
     }
 
     @Override
@@ -157,7 +167,23 @@ public class ScopeChecker implements CoolListener {
 
     @Override
     public void enterSub(CoolParser.SubContext ctx) {
-        
+        List list1 = new ArrayList<>();
+        List list2 = new ArrayList<>();
+
+        List<List> list3 = new ArrayList<>();
+
+        list1.add(ctx.expr().get(0).getText());
+        list1.add(ctx.expr().get(0).getStart().getLine());
+        list1.add(ctx.expr().get(0).getStart().getCharPositionInLine());
+
+        list2.add(ctx.expr().get(1).getText());
+        list2.add(ctx.expr().get(1).getStart().getLine());
+        list2.add(ctx.expr().get(1).getStart().getCharPositionInLine());
+
+        list3.add(list1);
+        list3.add(list2);
+
+        notExistError(list3, "var");
     }
 
     @Override
@@ -178,6 +204,23 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void enterMul(CoolParser.MulContext ctx) {
 
+        List list1 = new ArrayList<>();
+        List list2 = new ArrayList<>();
+
+        List<List> list3 = new ArrayList<>();
+
+        list1.add(ctx.expr().get(0).getText());
+        list1.add(ctx.expr().get(0).getStart().getLine());
+        list1.add(ctx.expr().get(0).getStart().getCharPositionInLine());
+
+        list2.add(ctx.expr().get(1).getText());
+        list2.add(ctx.expr().get(1).getStart().getLine());
+        list2.add(ctx.expr().get(1).getStart().getCharPositionInLine());
+
+        list3.add(list1);
+        list3.add(list2);
+
+        notExistError(list3, "var");
     }
 
     @Override
@@ -188,6 +231,23 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void enterLteq(CoolParser.LteqContext ctx) {
 
+        List list1 = new ArrayList<>();
+        List list2 = new ArrayList<>();
+
+        List<List> list3 = new ArrayList<>();
+
+        list1.add(ctx.expr().get(0).getText());
+        list1.add(ctx.expr().get(0).getStart().getLine());
+        list1.add(ctx.expr().get(0).getStart().getCharPositionInLine());
+
+        list2.add(ctx.expr().get(1).getText());
+        list2.add(ctx.expr().get(1).getStart().getLine());
+        list2.add(ctx.expr().get(1).getStart().getCharPositionInLine());
+
+        list3.add(list1);
+        list3.add(list2);
+
+        notExistError(list3, "var");
     }
 
     @Override
@@ -218,6 +278,23 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void enterLt(CoolParser.LtContext ctx) {
 
+        List list1 = new ArrayList<>();
+        List list2 = new ArrayList<>();
+
+        List<List> list3 = new ArrayList<>();
+
+        list1.add(ctx.expr().get(0).getText());
+        list1.add(ctx.expr().get(0).getStart().getLine());
+        list1.add(ctx.expr().get(0).getStart().getCharPositionInLine());
+
+        list2.add(ctx.expr().get(1).getText());
+        list2.add(ctx.expr().get(1).getStart().getLine());
+        list2.add(ctx.expr().get(1).getStart().getCharPositionInLine());
+
+        list3.add(list1);
+        list3.add(list2);
+
+        notExistError(list3, "var");
     }
 
     @Override
@@ -254,6 +331,23 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void enterDiv(CoolParser.DivContext ctx) {
 
+        List list1 = new ArrayList<>();
+        List list2 = new ArrayList<>();
+
+        List<List> list3 = new ArrayList<>();
+
+        list1.add(ctx.expr().get(0).getText());
+        list1.add(ctx.expr().get(0).getStart().getLine());
+        list1.add(ctx.expr().get(0).getStart().getCharPositionInLine());
+
+        list2.add(ctx.expr().get(1).getText());
+        list2.add(ctx.expr().get(1).getStart().getLine());
+        list2.add(ctx.expr().get(1).getStart().getCharPositionInLine());
+
+        list3.add(list1);
+        list3.add(list2);
+
+        notExistError(list3, "var");
     }
 
     @Override
@@ -264,6 +358,7 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void enterNot(CoolParser.NotContext ctx) {
 
+        //TODO
     }
 
     @Override
@@ -303,13 +398,15 @@ public class ScopeChecker implements CoolListener {
         int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
         Node field = duplicateError("let",ctx.ID(0).getText(),line,column);
-        nodes.add(field);
+        if (!skipField){
+            nodes.add(field);
+        }
         parents.peek().insert(field.name,new FieldObj("let",ctx.ID(0).getText(),ctx.TYPE(0).getText()));
     }
 
     @Override
     public void exitLet(CoolParser.LetContext ctx) {
-
+        skipField = false;
     }
 
     @Override
@@ -338,6 +435,23 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void enterAdd(CoolParser.AddContext ctx) {
 
+        List list1 = new ArrayList<>();
+        List list2 = new ArrayList<>();
+
+        List<List> list3 = new ArrayList<>();
+
+        list1.add(ctx.expr().get(0).getText());
+        list1.add(ctx.expr().get(0).getStart().getLine());
+        list1.add(ctx.expr().get(0).getStart().getCharPositionInLine());
+
+        list2.add(ctx.expr().get(1).getText());
+        list2.add(ctx.expr().get(1).getStart().getLine());
+        list2.add(ctx.expr().get(1).getStart().getCharPositionInLine());
+
+        list3.add(list1);
+        list3.add(list2);
+
+        notExistError(list3, "var");
     }
 
     @Override
@@ -393,6 +507,23 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void exitEqual(CoolParser.EqualContext ctx) {
 
+        List list1 = new ArrayList<>();
+        List list2 = new ArrayList<>();
+
+        List<List> list3 = new ArrayList<>();
+
+        list1.add(ctx.expr().get(0).getText());
+        list1.add(ctx.expr().get(0).getStart().getLine());
+        list1.add(ctx.expr().get(0).getStart().getCharPositionInLine());
+
+        list2.add(ctx.expr().get(1).getText());
+        list2.add(ctx.expr().get(1).getStart().getLine());
+        list2.add(ctx.expr().get(1).getStart().getCharPositionInLine());
+
+        list3.add(list1);
+        list3.add(list2);
+
+        notExistError(list3, "var");
     }
 
     @Override
@@ -418,6 +549,23 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void enterAssign(CoolParser.AssignContext ctx) {
 
+        List list1 = new ArrayList<>();
+        List list2 = new ArrayList<>();
+
+        List<List> list3 = new ArrayList<>();
+
+        list1.add(ctx.expr().getText());
+        list1.add(ctx.expr().getStart().getLine());
+        list1.add(ctx.expr().getStart().getCharPositionInLine());
+
+        list2.add(ctx.ID().getText());
+        list2.add(ctx.expr().getStart().getLine());
+        list2.add(ctx.expr().getStart().getCharPositionInLine());
+
+        list3.add(list1);
+        list3.add(list2);
+
+        notExistError(list3, "var");
     }
 
     @Override
@@ -444,7 +592,4 @@ public class ScopeChecker implements CoolListener {
     public void exitEveryRule(ParserRuleContext parserRuleContext) {
 
     }
-
-
-
 }
