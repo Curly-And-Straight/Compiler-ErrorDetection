@@ -6,4 +6,10 @@ public class NestedObj extends  ClassObj{
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return "NestedObj{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }
