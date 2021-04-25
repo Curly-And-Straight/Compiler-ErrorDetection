@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class Compiler {
     public static void main(String[] args) throws IOException{
-        CharStream stream = CharStreams.fromFileName("./sample/test2.cool");
+        CharStream stream = CharStreams.fromFileName("./sample/test.cool");
         CoolLexer lexer = new CoolLexer(stream);
         TokenStream tokens = new CommonTokenStream(lexer);
         CoolParser parser = new CoolParser(tokens);
