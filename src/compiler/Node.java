@@ -7,7 +7,7 @@ public class Node {
 
     public Node parent;
     public String name;
-    public Hashtable<String,ClassObj> symbolTable = new Hashtable();
+    public Hashtable<String,Scopes> symbolTable = new Hashtable();
 
     public Node(Node parent, String name){
         this.parent = parent;
@@ -18,11 +18,11 @@ public class Node {
         this.name = name;
     }
 
-    public void insert(String key, ClassObj value){
+    public void insert(String key, Scopes value){
         symbolTable.put(key,value);
     }
 
-    public ClassObj lookup(String key){
+    public Scopes lookup(String key){
         return symbolTable.get(key);
     }
 
