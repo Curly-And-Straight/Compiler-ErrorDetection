@@ -24,12 +24,23 @@ public class ScopeChecker implements CoolListener {
     public Boolean findMeInMyParent(String name) {
         Node parent = parents.peek();
         while (true) {
-            if(parent == null){
+            if (parent == null) {
                 return false;
             }
             if (parent.lookup(name) != null) {
                 return true;
             } else {
+                if (parent.parent != null) {
+                    if (parent.parent.lookup(parent.name).id == "method") {
+                        MethodObj method = (MethodObj) parent.parent.lookup(parent.name);
+                        for (int i = 0; i < method.params.size(); i++) {
+                            if (method.params.get(i).start.getText().equals(name)) {
+                                return true;
+                            }
+                        }
+
+                    }
+                }
                 parent = parent.parent;
             }
         }
@@ -109,7 +120,6 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void exitStart(CoolParser.StartContext ctx) {
         notExistError(new_objects, "class");
-//       notExistError(method_called, "method");
     }
 
     @Override
@@ -153,7 +163,7 @@ public class ScopeChecker implements CoolListener {
 
     @Override
     public void enterVarDef(CoolParser.VarDefContext ctx) {
-        if ((!skipClass) || (!skipMethod)) {
+        if ((!skipClass) && (!skipMethod)) {
             int line = ctx.getStart().getLine();
             int column = ctx.getStart().getCharPositionInLine();
             Node field = duplicateError("var", ctx.ID().getText(), line, column);
@@ -347,15 +357,16 @@ public class ScopeChecker implements CoolListener {
 
     @Override
     public void enterId(CoolParser.IdContext ctx) {
+        if ((!skipClass) && (!skipMethod)) {
+            List list1 = new ArrayList<>();
 
-        List list1 = new ArrayList<>();
-
-        list1.add(ctx.getText());
-        list1.add(ctx.getStart().getLine());
-        list1.add(ctx.getStart().getCharPositionInLine());
+            list1.add(ctx.getText());
+            list1.add(ctx.getStart().getLine());
+            list1.add(ctx.getStart().getCharPositionInLine());
 
 
-        notExistError(list1, "var");
+            notExistError(list1, "var");
+        }
     }
 
     @Override
