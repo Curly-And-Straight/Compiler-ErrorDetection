@@ -7,7 +7,6 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
@@ -57,10 +56,20 @@ public class ScopeChecker implements CoolListener {
                 break;
 
             case "var":
+
+                if(!parents.peek().symbolTable.containsKey(list.get(0))){
+
+                    error_number++;
+                    System.out.println("Error" + error_number + " : " + "in line [" + list.get(1) + ":" + list.get(2) + "], cannot find variable [" + list.get(0) + "]");
+                }
+                break;
+
+            case "method":
+
                 for (int i = 0; i < list.size(); i++) {
-                    if(!parents.peek().symbolTable.containsKey(list.get(i).get(0))){
+                    if(!nodes.get(0).symbolTable.containsKey(list.get(i).get(0))){
                         error_number++;
-                        System.out.println("Error" + error_number + " : " + "in line [" + list.get(i).get(1) + ":" + list.get(i).get(2) + "], cannot find variable [" + list.get(i).get(0) + "]");
+                        System.out.println("Error" + error_number + " : " + "in line [" + list.get(i).get(1) + ":" + list.get(i).get(2) + "], cannot find method [" + list.get(i).get(0) + "]");
                     }
                 }
                 break;
@@ -94,7 +103,7 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void exitStart(CoolParser.StartContext ctx) {
         notExistError(new_objects,"class");
-//        notExistError(method_called,"method");
+        notExistError(method_called,"method");
     }
 
     @Override
@@ -167,23 +176,7 @@ public class ScopeChecker implements CoolListener {
 
     @Override
     public void enterSub(CoolParser.SubContext ctx) {
-        List list1 = new ArrayList<>();
-        List list2 = new ArrayList<>();
 
-        List<List> list3 = new ArrayList<>();
-
-        list1.add(ctx.expr().get(0).getText());
-        list1.add(ctx.expr().get(0).getStart().getLine());
-        list1.add(ctx.expr().get(0).getStart().getCharPositionInLine());
-
-        list2.add(ctx.expr().get(1).getText());
-        list2.add(ctx.expr().get(1).getStart().getLine());
-        list2.add(ctx.expr().get(1).getStart().getCharPositionInLine());
-
-        list3.add(list1);
-        list3.add(list2);
-
-        notExistError(list3, "var");
     }
 
     @Override
@@ -204,23 +197,6 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void enterMul(CoolParser.MulContext ctx) {
 
-        List list1 = new ArrayList<>();
-        List list2 = new ArrayList<>();
-
-        List<List> list3 = new ArrayList<>();
-
-        list1.add(ctx.expr().get(0).getText());
-        list1.add(ctx.expr().get(0).getStart().getLine());
-        list1.add(ctx.expr().get(0).getStart().getCharPositionInLine());
-
-        list2.add(ctx.expr().get(1).getText());
-        list2.add(ctx.expr().get(1).getStart().getLine());
-        list2.add(ctx.expr().get(1).getStart().getCharPositionInLine());
-
-        list3.add(list1);
-        list3.add(list2);
-
-        notExistError(list3, "var");
     }
 
     @Override
@@ -231,23 +207,6 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void enterLteq(CoolParser.LteqContext ctx) {
 
-        List list1 = new ArrayList<>();
-        List list2 = new ArrayList<>();
-
-        List<List> list3 = new ArrayList<>();
-
-        list1.add(ctx.expr().get(0).getText());
-        list1.add(ctx.expr().get(0).getStart().getLine());
-        list1.add(ctx.expr().get(0).getStart().getCharPositionInLine());
-
-        list2.add(ctx.expr().get(1).getText());
-        list2.add(ctx.expr().get(1).getStart().getLine());
-        list2.add(ctx.expr().get(1).getStart().getCharPositionInLine());
-
-        list3.add(list1);
-        list3.add(list2);
-
-        notExistError(list3, "var");
     }
 
     @Override
@@ -267,7 +226,11 @@ public class ScopeChecker implements CoolListener {
 
     @Override
     public void enterStaticCall(CoolParser.StaticCallContext ctx) {
-        System.out.println("static call : " + ctx.getText());
+        List name = new ArrayList();
+        name.add(ctx.ID().getText());
+        name.add(ctx.getStart().getLine());
+        name.add(ctx.getStart().getCharPositionInLine());
+        method_called.add(name);
     }
 
     @Override
@@ -278,23 +241,6 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void enterLt(CoolParser.LtContext ctx) {
 
-        List list1 = new ArrayList<>();
-        List list2 = new ArrayList<>();
-
-        List<List> list3 = new ArrayList<>();
-
-        list1.add(ctx.expr().get(0).getText());
-        list1.add(ctx.expr().get(0).getStart().getLine());
-        list1.add(ctx.expr().get(0).getStart().getCharPositionInLine());
-
-        list2.add(ctx.expr().get(1).getText());
-        list2.add(ctx.expr().get(1).getStart().getLine());
-        list2.add(ctx.expr().get(1).getStart().getCharPositionInLine());
-
-        list3.add(list1);
-        list3.add(list2);
-
-        notExistError(list3, "var");
     }
 
     @Override
@@ -331,23 +277,6 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void enterDiv(CoolParser.DivContext ctx) {
 
-        List list1 = new ArrayList<>();
-        List list2 = new ArrayList<>();
-
-        List<List> list3 = new ArrayList<>();
-
-        list1.add(ctx.expr().get(0).getText());
-        list1.add(ctx.expr().get(0).getStart().getLine());
-        list1.add(ctx.expr().get(0).getStart().getCharPositionInLine());
-
-        list2.add(ctx.expr().get(1).getText());
-        list2.add(ctx.expr().get(1).getStart().getLine());
-        list2.add(ctx.expr().get(1).getStart().getCharPositionInLine());
-
-        list3.add(list1);
-        list3.add(list2);
-
-        notExistError(list3, "var");
     }
 
     @Override
@@ -358,7 +287,6 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void enterNot(CoolParser.NotContext ctx) {
 
-        //TODO
     }
 
     @Override
@@ -412,6 +340,14 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void enterId(CoolParser.IdContext ctx) {
 
+        List list1 = new ArrayList<>();
+
+        list1.add(ctx.getText());
+        list1.add(ctx.getStart().getLine());
+        list1.add(ctx.getStart().getCharPositionInLine());
+
+
+        notExistError(list1, "var");
     }
 
     @Override
@@ -435,23 +371,6 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void enterAdd(CoolParser.AddContext ctx) {
 
-        List list1 = new ArrayList<>();
-        List list2 = new ArrayList<>();
-
-        List<List> list3 = new ArrayList<>();
-
-        list1.add(ctx.expr().get(0).getText());
-        list1.add(ctx.expr().get(0).getStart().getLine());
-        list1.add(ctx.expr().get(0).getStart().getCharPositionInLine());
-
-        list2.add(ctx.expr().get(1).getText());
-        list2.add(ctx.expr().get(1).getStart().getLine());
-        list2.add(ctx.expr().get(1).getStart().getCharPositionInLine());
-
-        list3.add(list1);
-        list3.add(list2);
-
-        notExistError(list3, "var");
     }
 
     @Override
@@ -507,23 +426,6 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void exitEqual(CoolParser.EqualContext ctx) {
 
-        List list1 = new ArrayList<>();
-        List list2 = new ArrayList<>();
-
-        List<List> list3 = new ArrayList<>();
-
-        list1.add(ctx.expr().get(0).getText());
-        list1.add(ctx.expr().get(0).getStart().getLine());
-        list1.add(ctx.expr().get(0).getStart().getCharPositionInLine());
-
-        list2.add(ctx.expr().get(1).getText());
-        list2.add(ctx.expr().get(1).getStart().getLine());
-        list2.add(ctx.expr().get(1).getStart().getCharPositionInLine());
-
-        list3.add(list1);
-        list3.add(list2);
-
-        notExistError(list3, "var");
     }
 
     @Override
@@ -549,23 +451,6 @@ public class ScopeChecker implements CoolListener {
     @Override
     public void enterAssign(CoolParser.AssignContext ctx) {
 
-        List list1 = new ArrayList<>();
-        List list2 = new ArrayList<>();
-
-        List<List> list3 = new ArrayList<>();
-
-        list1.add(ctx.expr().getText());
-        list1.add(ctx.expr().getStart().getLine());
-        list1.add(ctx.expr().getStart().getCharPositionInLine());
-
-        list2.add(ctx.ID().getText());
-        list2.add(ctx.expr().getStart().getLine());
-        list2.add(ctx.expr().getStart().getCharPositionInLine());
-
-        list3.add(list1);
-        list3.add(list2);
-
-        notExistError(list3, "var");
     }
 
     @Override
